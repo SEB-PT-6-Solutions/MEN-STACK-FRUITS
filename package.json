@@ -21,7 +21,10 @@
   },
   "homepage": "https://github.com/SEB-PT-6-Solutions/MEN-STACK-FRUITS#readme",
   "dependencies": {
+    "dotenv": "^17.2.2",
+    "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "mongoose": "^8.18.0",
     "morgan": "^1.10.1"
   },
   "devDependencies": {
