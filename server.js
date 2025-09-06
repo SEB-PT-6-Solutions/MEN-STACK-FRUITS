@@ -6,6 +6,7 @@ dotenv.config();
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 
 const PORT = 3000;
 const app = express();
@@ -20,9 +21,9 @@ mongoose.connection.on('connected', () => {
 const Fruit = require('./models/fruit');
 
 // Middleware
-
-app.use(morgan('dev'));
+app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: false }));
+app.use(morgan('dev'));
 
 // Routes
 app.get('/', (req, res) => {
@@ -30,9 +31,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/fruits', async (req, res) => {
+  const msg = req.query.msg;
+
+  console.log(msg);
   const fruits = await Fruit.find();
 
-  res.render('fruits/index.ejs', { fruits });
+  res.render('fruits/index.ejs', { fruits, msg });
 });
 
 app.get('/fruits/new', (req, res) => {
@@ -57,6 +61,14 @@ app.post('/fruits', async (req, res) => {
   await Fruit.create(req.body);
 
   res.redirect('/fruits');
+});
+
+app.delete('/fruits/:fruitId', async (req, res) => {
+  const fruitId = req.params.fruitId;
+
+  await Fruit.findByIdAndDelete(fruitId);
+
+  res.redirect('/fruits?msg="record deleted"');
 });
 
 app.listen(PORT, () => {
