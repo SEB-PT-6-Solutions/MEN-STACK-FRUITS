@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-console */
 const dotenv = require('dotenv');
 
@@ -28,8 +29,21 @@ app.get('/', (req, res) => {
   res.render('index.ejs');
 });
 
+app.get('/fruits', async (req, res) => {
+  const fruits = await Fruit.find();
+
+  res.render('fruits/index.ejs', { fruits });
+});
+
 app.get('/fruits/new', (req, res) => {
   res.render('fruits/new.ejs');
+});
+
+app.get('/fruits/:fruitId', async (req, res) => {
+  const fruitId = req.params.fruitId;
+
+  const fruit = await Fruit.findById(fruitId);
+  res.render('fruits/show.ejs', { fruit });
 });
 
 app.post('/fruits', async (req, res) => {
@@ -42,7 +56,7 @@ app.post('/fruits', async (req, res) => {
 
   await Fruit.create(req.body);
 
-  res.redirect('/fruits/new');
+  res.redirect('/fruits');
 });
 
 app.listen(PORT, () => {
